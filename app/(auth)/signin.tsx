@@ -3,7 +3,7 @@ import { Heading, Text, VStack } from "@gluestack-ui/themed";
 import { StyledSafeAreaView, StyledView } from "@/components/StyledView";
 import { SignInForm } from "@/components/auth/SignInForm";
 
-export default function LoginScreen() {
+export default function SignInScreen() {
 	return (
 		<StyledSafeAreaView>
 			<StyledView paddingHorizontal={30} paddingVertical={50}>

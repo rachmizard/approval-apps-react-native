@@ -1,13 +1,9 @@
-import { SecureStore } from "@/utils/SecureStore";
-import { router, useRootNavigation } from "expo-router";
-import { useCallback, useEffect, useMemo, useReducer } from "react";
-import {
-	AuthContextProps,
-	AuthContextProvider,
-	AuthContextProviderProps,
-	useAuthContext,
-} from "./auth-context";
+import { useIsReadyToNavigate } from "@/hooks/use-is-ready-to-navigate";
 import { User } from "@/interfaces/user";
+import { SecureStore } from "@/utils/SecureStore";
+import { useRouter, useSegments } from "expo-router";
+import { useCallback, useEffect, useMemo, useReducer } from "react";
+import { AuthContextProvider, AuthContextProviderProps } from "./auth-context";
 
 type AuthAction = {
 	type: "LOGIN" | "LOGOUT";
@@ -66,23 +62,6 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
 		dispatch({ type: "LOGOUT" });
 	}, [dispatch]);
 
-	const value = useMemo<AuthContextProps>(
-		() => ({
-			isAuthenticated: state.isAuthenticated,
-			setLogin: handleSetLogin,
-			setLogout: handleSetLogout,
-			token: state.token,
-			user: state.user,
-		}),
-		[
-			state.isAuthenticated,
-			state.token,
-			state.user,
-			handleSetLogin,
-			handleSetLogout,
-		]
-	);
-
 	useEffect(() => {
 		const bootstrapAsync = async () => {
 			const token = await SecureStore.getItem<string>("token");
@@ -92,8 +71,8 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
 				dispatch({
 					type: "LOGIN",
 					params: {
-						token,
-						user,
+						token: token,
+						user: JSON.parse(user),
 					},
 				});
 			}
@@ -102,23 +81,49 @@ export function AuthProvider({ children }: AuthContextProviderProps) {
 		bootstrapAsync();
 	}, [dispatch]);
 
+	const value = useMemo(
+		() => ({
+			isAuthenticated: state.isAuthenticated,
+			setLogin: handleSetLogin,
+			setLogout: handleSetLogout,
+			token: state.token,
+			user: state.user,
+		}),
+		[
+			state.isAuthenticated,
+			handleSetLogin,
+			handleSetLogout,
+			state.token,
+			state.user,
+		]
+	);
+
+	useProtectedRoute(state.user);
+
 	return <AuthContextProvider value={value}>{children}</AuthContextProvider>;
 }
 
-export const AuthGuard = ({ children }: AuthContextProviderProps) => {
-	const rootNavigation = useRootNavigation();
-	const authContext = useAuthContext();
+export const useProtectedRoute = (user: User) => {
+	const segments = useSegments();
+	const router = useRouter();
+	const isReady = useIsReadyToNavigate();
 
 	useEffect(() => {
-		if (!rootNavigation?.isReady()) return;
+		if (!isReady) return;
 
-		if (authContext.isAuthenticated) {
-			router.replace("/(tabs)/");
-			return;
-		}
+		const execute = setTimeout(() => {
+			const inAuthGroup = segments[0] === "(auth)";
+			if (!user && !inAuthGroup) {
+				router.replace("/signin");
+			} else if (user && inAuthGroup) {
+				router.replace("/");
+			} else if (user && inAuthGroup) {
+				router.replace("/");
+			}
+		}, 0);
 
-		router.replace("/(auth)/");
-	}, [rootNavigation?.isReady(), authContext.isAuthenticated]);
-
-	return children;
+		return () => {
+			clearTimeout(execute);
+		};
+	}, [user, router, isReady]);
 };

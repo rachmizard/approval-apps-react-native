@@ -4,7 +4,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
-import { Slot, SplashScreen } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 
@@ -48,7 +48,20 @@ function RootLayoutNav() {
 			config={extendedConfig}>
 			<QueryClientProvider client={queryClient}>
 				<AuthProvider>
-					<Slot />
+					<Stack initialRouteName="signin">
+						<Stack.Screen
+							name="(auth)"
+							options={{
+								headerShown: false,
+							}}
+						/>
+						<Stack.Screen
+							name="(tabs)"
+							options={{
+								headerShown: false,
+							}}
+						/>
+					</Stack>
 				</AuthProvider>
 			</QueryClientProvider>
 		</GluestackUIProvider>

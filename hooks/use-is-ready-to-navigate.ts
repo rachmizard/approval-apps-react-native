@@ -1,8 +1,16 @@
 import { useRootNavigation } from "expo-router";
+import { useEffect, useState } from "react";
 
 export function useIsReadyToNavigate() {
 	const rootNavigation = useRootNavigation();
-	if (!rootNavigation?.isReady()) return false;
+	const [ready, setReady] = useState(false);
 
-	return true;
+	useEffect(() => {
+		if (rootNavigation?.isReady()) {
+			setReady(true);
+			return;
+		}
+	}, [rootNavigation, setReady]);
+
+	return ready;
 }

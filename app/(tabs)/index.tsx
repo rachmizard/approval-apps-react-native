@@ -1,5 +1,5 @@
 import { StyledSafeAreaView, StyledView } from "@/components/StyledView";
-import { Box, Center, Heading, Text } from "@gluestack-ui/themed";
+import { Heading } from "@gluestack-ui/themed";
 
 export default function ReimbursementApprovalScreen() {
 	return (

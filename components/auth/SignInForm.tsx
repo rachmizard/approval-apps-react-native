@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import {
 	Alert,
 	AlertIcon,
@@ -19,7 +20,6 @@ import { useQueryGetProfile } from "@/hooks/react-query/auth/use-get-profile";
 import { FormControl } from "../FormControl";
 
 import { useAuthContext } from "@/contexts/auth/auth-context";
-import { router } from "expo-router";
 
 const DEFAULT_VALUES = {
 	username: "",
@@ -38,10 +38,6 @@ export function SignInForm({ defaultValues }: SignInFormProps) {
 	});
 
 	const { setLogin, token, user } = useAuthContext();
-	console.log({
-		token,
-		user,
-	});
 
 	const {
 		mutateAsync: mutateSignInAsync,
@@ -61,7 +57,7 @@ export function SignInForm({ defaultValues }: SignInFormProps) {
 	useUpdateEffect(() => {
 		if (dataGetProfile && dataMutateSignInAsync?.token) {
 			setLogin(dataGetProfile, dataMutateSignInAsync?.token);
-			router.replace("/(tabs)");
+			// router.replace("/");
 		}
 	}, [dataGetProfile, dataMutateSignInAsync?.token]);
 

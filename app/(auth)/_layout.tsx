@@ -1,12 +1,14 @@
 import { Stack } from "expo-router";
 
-export default () => (
-	<Stack>
-		<Stack.Screen
-			name="index"
-			options={{
-				headerShown: false,
-			}}
-		/>
-	</Stack>
-);
+export default function AuthLayout() {
+	return (
+		<Stack>
+			<Stack.Screen
+				name="signin"
+				options={{
+					headerShown: false,
+				}}
+			/>
+		</Stack>
+	);
+}
