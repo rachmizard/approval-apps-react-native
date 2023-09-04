@@ -43,8 +43,9 @@ export function FormControl({
 			isDisabled={isDisabled}
 			isInvalid={isInvalid}
 			isReadOnly={isReadOnly}
-			isRequired={isRequired}>
-			<FormControlLabel mb="$1">
+			isRequired={isRequired}
+			width="$full">
+			<FormControlLabel mb="$2">
 				<FormControlLabelText>{labelText}</FormControlLabelText>
 			</FormControlLabel>
 			{component}

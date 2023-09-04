@@ -1,5 +1,5 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Tabs } from "expo-router";
+import { Link, Tabs, router } from "expo-router";
 import { Pressable, useColorScheme } from "react-native";
 
 import Colors from "../../constants/Colors";
@@ -30,23 +30,22 @@ export default function TabLayout() {
 						<TabBarIcon name={"money"} color={color} />
 					),
 					headerRight: () => (
-						<Link href="/modal" asChild>
-							<Pressable>
-								{({ pressed }) => (
-									<FontAwesome
-										name="filter"
-										size={25}
-										color={
-											Colors[colorScheme ?? "light"].text
-										}
-										style={{
-											marginRight: 15,
-											opacity: pressed ? 0.5 : 1,
-										}}
-									/>
-								)}
-							</Pressable>
-						</Link>
+						<Pressable
+							onPress={() =>
+								router.setParams({ showActionSheet: "true" })
+							}>
+							{({ pressed }) => (
+								<FontAwesome
+									name="filter"
+									size={25}
+									color={Colors[colorScheme ?? "light"].text}
+									style={{
+										marginRight: 15,
+										opacity: pressed ? 0.5 : 1,
+									}}
+								/>
+							)}
+						</Pressable>
 					),
 				}}
 			/>

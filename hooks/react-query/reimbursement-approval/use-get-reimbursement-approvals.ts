@@ -7,20 +7,40 @@ const DEFAULT_LIMIT = 10;
 
 const reimbursementService = new ReimbursementService();
 
-export function useQueryGetReimbursementApprovals(params?: BaseRequestParams) {
-	const [limit, setLimit] = useState(
-		params?.limit || params?.l || DEFAULT_LIMIT
+function removeEmpty<T extends object>(obj: T) {
+	return Object.fromEntries(
+		Object.entries(obj).filter(([_, v]) => v != null && v !== "")
 	);
-	const [page, __] = useState(params?.page || params?.p || 1);
+}
+
+export function useQueryGetReimbursementApprovals(
+	defaultParams?: BaseRequestParams
+) {
+	const [limit, setLimit] = useState(
+		defaultParams?.limit || defaultParams?.l || DEFAULT_LIMIT
+	);
+	const [page, __] = useState(defaultParams?.page || defaultParams?.p || 1);
+
+	const [reimbursementParams, setReimbursementParams] = useState({});
+
+	function setParams(params: BaseRequestParams) {
+		setReimbursementParams((prev) => ({ ...prev, ...params }));
+	}
 
 	const query = useBaseQuery({
-		queryKey: ["reimbursement-approvals", { page, limit, ...params }],
+		queryKey: [
+			"reimbursement-approvals",
+			{ page, limit, ...defaultParams, ...reimbursementParams },
+		],
 		queryFn: () =>
-			reimbursementService.getReimbursementApprovals({
-				page,
-				limit,
-				...params,
-			}),
+			reimbursementService.getReimbursementApprovals(
+				removeEmpty({
+					page,
+					limit,
+					...defaultParams,
+					...reimbursementParams,
+				})
+			),
 		keepPreviousData: true,
 		staleTime: 1000 * 60 * 5,
 	});
@@ -35,5 +55,7 @@ export function useQueryGetReimbursementApprovals(params?: BaseRequestParams) {
 		...query,
 		hasNextPage: query.data?.meta_data.nextPage !== null,
 		setNextPage,
+		params: reimbursementParams,
+		setParams,
 	};
 }
