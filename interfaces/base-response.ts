@@ -4,3 +4,15 @@ export interface BaseResponse<T> {
 	message: string;
 	status_code: number;
 }
+
+export interface BaseListResponse<T> {
+	requestId: string;
+	data: T[];
+	count: number;
+	meta_data: {
+		totalItems: number;
+		itemsPerPage: number;
+		lastPage: number;
+		nextPage: number | null;
+	};
+}

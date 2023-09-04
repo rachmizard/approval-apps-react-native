@@ -25,16 +25,16 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="index"
 				options={{
-					title: "Home",
+					title: "Reimbursement Approval",
 					tabBarIcon: ({ color }) => (
-						<TabBarIcon name="home" color={color} />
+						<TabBarIcon name={"money"} color={color} />
 					),
 					headerRight: () => (
 						<Link href="/modal" asChild>
 							<Pressable>
 								{({ pressed }) => (
 									<FontAwesome
-										name="info-circle"
+										name="filter"
 										size={25}
 										color={
 											Colors[colorScheme ?? "light"].text
