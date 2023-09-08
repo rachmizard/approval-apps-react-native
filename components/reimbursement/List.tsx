@@ -35,6 +35,8 @@ export const ReimbursementList: FC<Props> = ({
 					claimDate={item.claim_date}
 					employeeName={item.employee_name}
 					avatar={item.employee_avatar}
+					status={item.status}
+					id={item.id}
 				/>
 			)}
 			scrollEnabled={true}

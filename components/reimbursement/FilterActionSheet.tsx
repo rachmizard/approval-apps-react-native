@@ -75,6 +75,10 @@ export const ReimbursementFilterActionSheet: FC<Props> = ({
 													value: "approved",
 												},
 												{
+													label: "Pending",
+													value: "pending",
+												},
+												{
 													label: "Rejected",
 													value: "rejected",
 												},

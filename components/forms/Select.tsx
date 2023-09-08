@@ -47,7 +47,7 @@ export const Select = ({
 					<Icon as={ChevronDownIcon} />
 				</SelectIcon>
 			</SelectTrigger>
-			<SelectPortal snapPoints={[20]}>
+			<SelectPortal snapPoints={[40]}>
 				<SelectBackdrop />
 				<SelectContent h="100%">
 					<SelectDragIndicatorWrapper>

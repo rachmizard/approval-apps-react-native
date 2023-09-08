@@ -61,6 +61,12 @@ function RootLayoutNav() {
 								headerShown: false,
 							}}
 						/>
+						<Stack.Screen
+							name="(reimbursement)"
+							options={{
+								title: "Reimbursement Detail",
+							}}
+						/>
 					</Stack>
 				</AuthProvider>
 			</QueryClientProvider>

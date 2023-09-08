@@ -43,4 +43,31 @@ export class ReimbursementService extends RequestAdapterService {
 			throw new GeneralException(error.message || "Something went wrong");
 		}
 	}
+
+	public async getReimbursementApprovalDetail(
+		id: string
+	): Promise<ReimbursementApproval> {
+		try {
+			const { data } = await super.sendGetRequest<ReimbursementApproval>(
+				`/reimbursement_approvals/${id}`
+			);
+
+			return data;
+		} catch (error: any) {
+			if (error?.response) {
+				switch (error.response.status) {
+					case 401:
+						throw new UnauthorizedException("Unauthorized");
+					default:
+						throw new GeneralException(
+							error.response.data.message ||
+								error.message ||
+								"Something went wrong"
+						);
+				}
+			}
+
+			throw new GeneralException(error.message || "Something went wrong");
+		}
+	}
 }
