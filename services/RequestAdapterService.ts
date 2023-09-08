@@ -47,4 +47,12 @@ export class RequestAdapterService {
 	) {
 		return this.adapter.post<T, AxiosResponse<T>>(url, payload, options);
 	}
+
+	public async sendPutRequest<T extends unknown, P extends unknown>(
+		url: string,
+		payload: P,
+		options?: AxiosRequestConfig<T>
+	) {
+		return this.adapter.put<T, AxiosResponse<T>>(url, payload, options);
+	}
 }

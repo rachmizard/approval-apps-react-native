@@ -2,6 +2,7 @@ import { BaseRequestParams } from "@/interfaces/base-request";
 import { ReimbursementService } from "@/services/Reimbursement";
 import { useBaseQuery } from "../use-base-query";
 import { useState } from "react";
+import { useFocusNotifyOnChangeProps } from "../use-focus-notify-onchange";
 
 const DEFAULT_LIMIT = 10;
 
@@ -41,8 +42,6 @@ export function useQueryGetReimbursementApprovals(
 					...reimbursementParams,
 				})
 			),
-		keepPreviousData: true,
-		staleTime: 1000 * 60 * 5,
 	});
 
 	function setNextPage() {

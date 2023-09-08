@@ -1,7 +1,10 @@
 import { BaseListResponse } from "@/interfaces/base-response";
 import { Environment } from "@/utils/environment";
 import { RequestAdapterService } from "../RequestAdapterService";
-import { ReimbursementApproval } from "./interface";
+import {
+	ReimbursementApproval,
+	ReimbursementUpdateRequestPayload,
+} from "./interface";
 import { UnauthorizedException } from "@/exceptions/auth/UnauthorizedException";
 import { GeneralException } from "@/exceptions/GeneralException";
 import { BaseRequestParams } from "@/interfaces/base-request";
@@ -68,6 +71,37 @@ export class ReimbursementService extends RequestAdapterService {
 			}
 
 			throw new GeneralException(error.message || "Something went wrong");
+		}
+	}
+
+	public async updateReimbursementApproval(
+		id: string,
+		payload: ReimbursementUpdateRequestPayload
+	) {
+		try {
+			const { data } = await super.sendPutRequest<
+				ReimbursementApproval,
+				ReimbursementUpdateRequestPayload
+			>(`/reimbursement_approvals/${id}`, payload);
+
+			return data;
+		} catch (error: any) {
+			if (error?.response) {
+				switch (error?.response.status) {
+					case 500:
+						throw new GeneralException(
+							error.response.data.message ||
+								error.message ||
+								"Something went wrong"
+						);
+					default:
+						throw new GeneralException(
+							error.response.data.message ||
+								error.message ||
+								"Something went wrong"
+						);
+				}
+			}
 		}
 	}
 }

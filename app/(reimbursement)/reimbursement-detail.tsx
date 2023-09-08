@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { StyledSafeAreaView, StyledView } from "@/components/StyledView";
 import {
 	AlertIcon,
@@ -6,6 +6,7 @@ import {
 	BadgeIcon,
 	BadgeText,
 	Button,
+	ButtonSpinner,
 	ButtonText,
 	Center,
 	CheckIcon,
@@ -15,11 +16,12 @@ import {
 	Text,
 	VStack,
 } from "@gluestack-ui/themed";
-import { useGlobalSearchParams } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 import { useQueryGetReimbursementApprovalDetail } from "@/hooks/react-query/reimbursement-approval/use-get-reimbursement-approval-detail";
 import { formatDate } from "@/utils/date-utility";
 import { toCapitalize, toDollar } from "@/utils/string-utility";
 import { ReimbursementStatus } from "@/services/Reimbursement/interface";
+import { useUpdateReimbursementApproval } from "@/hooks/react-query/reimbursement-approval/use-update-reimbursement-approval";
 
 type Params = {
 	id: string;
@@ -28,10 +30,21 @@ type Params = {
 const ReimbursementDetailScreen = () => {
 	const { id } = useGlobalSearchParams<Params>();
 
+	const onRedirectBack = useCallback(() => {
+		router.back();
+	}, []);
+
 	const {
 		data: reimbursementApprovalDetail,
 		isLoading: isReimbursementApprovalDetailLoading,
 	} = useQueryGetReimbursementApprovalDetail(id);
+
+	const {
+		mutate: updateReimbursementApproval,
+		isLoading: isLoadingUpdateReimbursementApproval,
+	} = useUpdateReimbursementApproval({
+		onSuccess: () => onRedirectBack(),
+	});
 
 	if (isReimbursementApprovalDetailLoading) {
 		return (
@@ -92,6 +105,9 @@ const ReimbursementDetailScreen = () => {
 			reimbursementApprovalDetail?.status ?? "pending"
 		];
 
+	const isShowApprovalButton =
+		reimbursementApprovalDetail?.status === "pending";
+
 	return (
 		<StyledSafeAreaView>
 			<StyledView
@@ -146,14 +162,38 @@ const ReimbursementDetailScreen = () => {
 					</HStack>
 				</VStack>
 
-				<VStack flex={1} space="md" justifyContent="flex-end">
-					<Button>
-						<ButtonText>Approve</ButtonText>
-					</Button>
-					<Button variant="outline" action="negative">
-						<ButtonText>Reject</ButtonText>
-					</Button>
-				</VStack>
+				{isShowApprovalButton && (
+					<VStack flex={1} space="md" justifyContent="flex-end">
+						<Button
+							isDisabled={isLoadingUpdateReimbursementApproval}
+							onPress={() =>
+								updateReimbursementApproval({
+									id: reimbursementId ?? "",
+									status: "approved",
+								})
+							}>
+							{isLoadingUpdateReimbursementApproval && (
+								<ButtonSpinner mr="$1" />
+							)}
+							<ButtonText>Approve</ButtonText>
+						</Button>
+						<Button
+							isDisabled={isLoadingUpdateReimbursementApproval}
+							onPress={() =>
+								updateReimbursementApproval({
+									id: reimbursementId ?? "",
+									status: "rejected",
+								})
+							}
+							variant="outline"
+							action="negative">
+							{isLoadingUpdateReimbursementApproval && (
+								<ButtonSpinner mr="$1" />
+							)}
+							<ButtonText>Reject</ButtonText>
+						</Button>
+					</VStack>
+				)}
 			</StyledView>
 		</StyledSafeAreaView>
 	);

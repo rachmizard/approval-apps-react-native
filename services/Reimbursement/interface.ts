@@ -16,3 +16,8 @@ export interface ReimbursementApproval {
 	status: ReimbursementStatus;
 	id: string;
 }
+
+export interface ReimbursementUpdateRequestPayload {
+	status: ReimbursementStatus;
+	id: string;
+}
